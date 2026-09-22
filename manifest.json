@@ -1,0 +1,8 @@
+{
+  "short_name": "Fossils",
+  "name": "Fossil Dataset Collector",
+  "start_url": "index.html",
+  "background_color": "#1c1c1e",
+  "theme_color": "#1c1c1e",
+  "display": "standalone"
+}
