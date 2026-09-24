@@ -3,190 +3,332 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Fossil Collector</title>
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Fossil Collector</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px; background: #1c1c1e; color: #fff; margin: 0; }
-    .card { background: #2c2c2e; padding: 20px; border-radius: 16px; max-width: 400px; margin: auto; }
-    h2 { margin-top: 0; text-align: center; }
-    label { font-size: 14px; color: #aaa; margin-bottom: 6px; display: block; }
-    select, button { width: 100%; padding: 14px; margin-top: 10px; font-size: 16px; border-radius: 10px; border: none; box-sizing: border-box; }
-    select { background: #3a3a3c; color: white; }
-    button { background: #0a84ff; color: white; font-weight: bold; }
-    button:active { opacity: 0.8; }
-    .btn-secondary { background: #30d158; }
-    #preview { width: 100%; max-height: 250px; object-fit: contain; margin-top: 15px; border-radius: 10px; display: none; }
-    #status { margin-top: 15px; font-size: 14px; text-align: center; color: #ffd60a; font-weight: 500; }
+    :root {
+      --bg-color: #1c1c1e;
+      --card-bg: #2c2c2e;
+      --accent-color: #0a84ff;
+      --text-color: #ffffff;
+      --subtext-color: #8e8e93;
+      --border-color: #38383a;
+      --success-color: #30d158;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--subtext-color);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    select, button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background-color: #3a3a3c;
+      color: var(--text-color);
+      font-size: 1rem;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+    }
+
+    button {
+      background-color: var(--accent-color);
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:active {
+      opacity: 0.8;
+    }
+
+    .preview-img {
+      width: 100%;
+      border-radius: 8px;
+      display: none;
+      margin-bottom: 12px;
+    }
+
+    .status {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--subtext-color);
+      min-height: 20px;
+    }
+
+    /* Unsorted Queue Styling */
+    .queue-item {
+      display: flex;
+      gap: 12px;
+      background-color: #3a3a3c;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .queue-thumb {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .queue-controls {
+      flex: 1;
+    }
+
+    .queue-controls select {
+      margin-bottom: 6px;
+      padding: 6px;
+      font-size: 0.85rem;
+    }
+
+    .queue-controls button {
+      margin-bottom: 0;
+      padding: 6px;
+      font-size: 0.85rem;
+      background-color: var(--success-color);
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>Fossil Collector</h2>
-    
-    <label for="species">Select Target Folder:</label>
-    <select id="species">
-      <option value="amber_fossil">amber_fossil</option>
-      <option value="ammonite_unspecified">ammonite_unspecified</option>
-      <option value="anahoplites">anahoplites</option>
-      <option value="arietites">arietites</option>
-      <option value="asteroceras">asteroceras</option>
-      <option value="becheiceras">becheiceras</option>
-      <option value="belemnite_guard">belemnite_guard</option>
-      <option value="cadoceras">cadoceras</option>
-      <option value="calymene_trilobite">calymene_trilobite</option>
-      <option value="clypeus_echinoid">clypeus_echinoid</option>
-      <option value="crinoid_general">crinoid_general</option>
-      <option value="cyclothyris_brachiopod">cyclothyris_brachiopod</option>
-      <option value="dactylioceras">dactylioceras</option>
-      <option value="dalmanites_trilobite">dalmanites_trilobite</option>
-      <option value="deshayesites">deshayesites</option>
-      <option value="dinosaur_bone_fragment">dinosaur_bone_fragment</option>
-      <option value="echinocorys_echinoid">echinocorys_echinoid</option>
-      <option value="eldredgeops_phacops">eldredgeops_phacops</option>
-      <option value="euhoplites">euhoplites</option>
-      <option value="gryphaea_fossil">gryphaea_fossil</option>
-      <option value="harpoceras">harpoceras</option>
-      <option value="hemicidaris_echinoid">hemicidaris_echinoid</option>
-      <option value="hildoceras">hildoceras</option>
-      <option value="hoplites">hoplites</option>
-      <option value="hybodus_shark_fin_spine">hybodus_shark_fin_spine</option>
-      <option value="ichthyosaur_general">ichthyosaur_general</option>
-      <option value="kosmoceras">kosmoceras</option>
-      <option value="lithostrotion_coral">lithostrotion_coral</option>
-      <option value="lituites_cephalopod">lituites_cephalopod</option>
-      <option value="megalodon_tooth">megalodon_tooth</option>
-      <option value="micraster_echinoid">micraster_echinoid</option>
-      <option value="montlivaltia_coral">montlivaltia_coral</option>
-      <option value="nautilus_fossil">nautilus_fossil</option>
-      <option value="ogygiocarella_trilobite">ogygiocarella_trilobite</option>
-      <option value="otodus_shark_tooth">otodus_shark_tooth</option>
-      <option value="paradoxides_trilobite">paradoxides_trilobite</option>
-      <option value="pecten_bivalve">pecten_bivalve</option>
-      <option value="perisphinctes">perisphinctes</option>
-      <option value="phylloceras">phylloceras</option>
-      <option value="plant_sigillaria_lepidodendron">plant_sigillaria_lepidodendron</option>
-      <option value="plesiosaur_teeth">plesiosaur_teeth</option>
-      <option value="plesiosaur_vertebra">plesiosaur_vertebra</option>
-      <option value="promicroceras">promicroceras</option>
-      <option value="pycnodont_tooth">pycnodont_tooth</option>
-      <option value="quenstedtoceras">quenstedtoceras</option>
-      <option value="rhynchonella_brachiopod">rhynchonella_brachiopod</option>
-      <option value="schloenbachia">schloenbachia</option>
-      <option value="spondylus_bivalve">spondylus_bivalve</option>
-      <option value="striatolamia_shark_tooth">striatolamia_shark_tooth</option>
-      <option value="terebratula_brachiopod">terebratula_brachiopod</option>
-      <option value="titanites">titanites</option>
-      <option value="trace_fossil_burrow_and_worm_tube">trace_fossil_burrow_and_worm_tube</option>
-      <option value="xipheroceras">xipheroceras</option>
-    </select>
 
-    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
-    <button onclick="document.getElementById('cameraInput').click()">📷 Take Fossil Photo</button>
-    <img id="preview" alt="Preview">
+  <div class="container">
+    <h1>Fossil Capture</h1>
 
-    <button class="btn-secondary" onclick="saveAndUpload()">Save & Sync</button>
-    <div id="status">Ready</div>
+    <!-- Capture Card -->
+    <div class="card">
+      <label for="categorySelect">Select Target Species</label>
+      <select id="categorySelect">
+        <option value="UNSORTED">-- Unsorted / Assign Later --</option>
+        <option value="calymene_trilobite">calymene_trilobite</option>
+        <option value="dactylioceras">dactylioceras</option>
+        <option value="amber_fossil">amber_fossil</option>
+        <!-- Add your full list of categories here -->
+      </select>
+
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
+      
+      <button id="snapBtn">📷 Take Photo</button>
+      
+      <img id="imagePreview" class="preview-img" alt="Preview">
+      
+      <button id="uploadBtn" style="display:none;">Upload Photo</button>
+      
+      <div id="statusText" class="status"></div>
+    </div>
+
+    <!-- Unsorted Queue Section -->
+    <div class="card" id="queueCard" style="display: none;">
+      <label>Unsorted Drafts (<span id="queueCount">0</span>)</label>
+      <div id="queueContainer"></div>
+    </div>
   </div>
 
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
-
-    let db;
-    const request = indexedDB.open("FossilCollectorDB", 1);
-    request.onupgradeneeded = e => {
-      db = e.target.result;
-      db.createObjectStore("pendingUploads", { autoIncrement: true });
-    };
-    request.onsuccess = e => { db = e.target.result; checkPendingUploads(); };
+    const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 
     const cameraInput = document.getElementById('cameraInput');
-    const preview = document.getElementById('preview');
-    let currentBase64 = null;
+    const snapBtn = document.getElementById('snapBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const imagePreview = document.getElementById('imagePreview');
+    const categorySelect = document.getElementById('categorySelect');
+    const statusText = document.getElementById('statusText');
+    const queueCard = document.getElementById('queueCard');
+    const queueContainer = document.getElementById('queueContainer');
+    const queueCount = document.getElementById('queueCount');
 
-    cameraInput.addEventListener('change', e => {
+    let currentBase64 = null;
+    let db;
+
+    // Initialize IndexedDB
+    const request = indexedDB.open('FossilCollectorDB', 2);
+    request.onupgradeneeded = (e) => {
+      db = e.target.result;
+      if (!db.objectStoreNames.contains('drafts')) {
+        db.createObjectStore('drafts', { keyPath: 'id', autoIncrement: true });
+      }
+    };
+    request.onsuccess = (e) => {
+      db = e.target.result;
+      renderQueue();
+    };
+
+    snapBtn.addEventListener('click', () => cameraInput.click());
+
+    cameraInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = ev => {
-          currentBase64 = ev.target.result;
-          preview.src = currentBase64;
-          preview.style.display = 'block';
+        reader.onload = (event) => {
+          currentBase64 = event.target.result;
+          imagePreview.src = currentBase64;
+          imagePreview.style.display = 'block';
+          uploadBtn.style.display = 'block';
+          statusText.innerText = "";
         };
         reader.readAsDataURL(file);
       }
     });
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLACQ3MCDFxzv4Q9zslvSbTt4oxOtfud5uqkvdITCwG2SB6CmvCeNs4JeTbm4DQqU/exec";
+    uploadBtn.addEventListener('click', () => {
+      const selectedCategory = categorySelect.value;
 
-    function saveAndUpload() {
-      if (!currentBase64) return alert("Take a photo first.");
-      const species = document.getElementById('species').value;
-      const data = { species, image: currentBase64, timestamp: new Date().toISOString() };
+      if (!currentBase64) return;
 
-      if (navigator.onLine) {
-        uploadToDrive(data);
-      } else {
-        saveToIndexedDB(data);
-      }
-    }
-
-    function saveToIndexedDB(data) {
-      const tx = db.transaction("pendingUploads", "readwrite");
-      tx.objectStore("pendingUploads").add(data);
-      document.getElementById('status').innerText = "Offline: Stored locally. Will auto-sync when online.";
-      resetForm();
-    }
-
-    function uploadToDrive(data) {
-      document.getElementById('status').innerText = "Uploading to Drive...";
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify(data)
-      })
-      .then(res => res.json())
-      .then(res => {
-        if(res.status === "success") {
-          document.getElementById('status').innerText = "Upload complete!";
+      if (selectedCategory === "UNSORTED") {
+        // Save to Draft Queue
+        const tx = db.transaction('drafts', 'readwrite');
+        tx.objectStore('drafts').add({
+          image: currentBase64,
+          timestamp: Date.now()
+        });
+        tx.oncomplete = () => {
+          statusText.innerText = "Saved to Unsorted Drafts!";
           resetForm();
+          renderQueue();
+        };
+      } else {
+        // Direct Upload to Apps Script
+        sendToGoogleDrive(currentBase64, selectedCategory, null);
+      }
+    });
+
+    function sendToGoogleDrive(base64Data, category, draftId = null) {
+      statusText.innerText = "Uploading to Drive...";
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image: base64Data,
+          category: category,
+          timestamp: Date.now()
+        })
+      })
+      .then(() => {
+        statusText.innerText = "Successfully saved to Drive!";
+        if (draftId !== null) {
+          // Remove from draft queue if it was an unsorted draft
+          const tx = db.transaction('drafts', 'readwrite');
+          tx.objectStore('drafts').delete(draftId);
+          tx.oncomplete = () => renderQueue();
         } else {
-          document.getElementById('status').innerText = "Error: " + res.message;
+          resetForm();
         }
       })
-      .catch(() => saveToIndexedDB(data));
+      .catch((err) => {
+        statusText.innerText = "Error uploading. Saved offline.";
+      });
     }
 
-    window.addEventListener('online', checkPendingUploads);
+    function renderQueue() {
+      if (!db) return;
+      const tx = db.transaction('drafts', 'readonly');
+      const store = tx.objectStore('drafts');
+      const request = store.getAll();
 
-    function checkPendingUploads() {
-      if (!navigator.onLine || !db) return;
-      const tx = db.transaction("pendingUploads", "readwrite");
-      const store = tx.objectStore("pendingUploads");
-      const req = store.openCursor();
+      request.onsuccess = () => {
+        const items = request.result;
+        queueCount.innerText = items.length;
 
-      req.onsuccess = e => {
-        const cursor = e.target.result;
-        if (cursor) {
-          const record = cursor.value;
-          fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(record) })
-            .then(res => res.json())
-            .then(res => {
-              if (res.status === "success") {
-                const delTx = db.transaction("pendingUploads", "readwrite");
-                delTx.objectStore("pendingUploads").delete(cursor.key);
-              }
-              cursor.continue();
-            });
+        if (items.length === 0) {
+          queueCard.style.display = 'none';
+          return;
         }
+
+        queueCard.style.display = 'block';
+        queueContainer.innerHTML = '';
+
+        items.forEach((item) => {
+          const div = document.createElement('div');
+          div.className = 'queue-item';
+          div.innerHTML = `
+            <img src="${item.image}" class="queue-thumb">
+            <div class="queue-controls">
+              <select id="select-${item.id}">
+                <option value="">-- Choose Category --</option>
+                <option value="calymene_trilobite">calymene_trilobite</option>
+                <option value="dactylioceras">dactylioceras</option>
+                <option value="amber_fossil">amber_fossil</option>
+              </select>
+              <button onclick="assignAndUpload(${item.id})">Save to Drive</button>
+            </div>
+          `;
+          queueContainer.appendChild(div);
+        });
       };
     }
 
+    window.assignAndUpload = function(id) {
+      const catSelect = document.getElementById(`select-${id}`);
+      const category = catSelect.value;
+
+      if (!category) {
+        alert("Please select a category first.");
+        return;
+      }
+
+      const tx = db.transaction('drafts', 'readonly');
+      const store = tx.objectStore('drafts');
+      const request = store.get(id);
+
+      request.onsuccess = () => {
+        const item = request.result;
+        sendToGoogleDrive(item.image, category, id);
+      };
+    };
+
     function resetForm() {
-      preview.style.display = 'none';
+      imagePreview.style.display = 'none';
+      uploadBtn.style.display = 'none';
       currentBase64 = null;
+      cameraInput.value = "";
+    }
+
+    // Register Service Worker for PWA offline caching
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
     }
   </script>
 </body>
