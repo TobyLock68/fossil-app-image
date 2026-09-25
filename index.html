@@ -94,7 +94,7 @@
       min-height: 20px;
     }
 
-    /* Unsorted Queue Styling */
+    /* Queue & Inspector Styling */
     .queue-item {
       display: flex;
       gap: 12px;
@@ -106,10 +106,12 @@
     }
 
     .queue-thumb {
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
       object-fit: cover;
       border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid var(--accent-color);
     }
 
     .queue-controls {
@@ -128,32 +130,114 @@
       font-size: 0.85rem;
       background-color: var(--success-color);
     }
+
+    /* Modal Image Inspector */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.9);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .modal-content {
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    .close-modal {
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 15px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>Fossil Capture</h1>
+    <h1>Fossil Collector</h1>
 
     <!-- Capture Card -->
     <div class="card">
       <label for="categorySelect">Select Target Species</label>
       <select id="categorySelect">
         <option value="UNSORTED">-- Unsorted / Assign Later --</option>
-        <option value="calymene_trilobite">calymene_trilobite</option>
-        <option value="dactylioceras">dactylioceras</option>
         <option value="amber_fossil">amber_fossil</option>
-        <!-- Add your full list of categories here -->
+        <option value="ammonite_unspecified">ammonite_unspecified</option>
+        <option value="anahoplites">anahoplites</option>
+        <option value="arietites">arietites</option>
+        <option value="asteroceras">asteroceras</option>
+        <option value="becheiceras">becheiceras</option>
+        <option value="belemnite_guard">belemnite_guard</option>
+        <option value="cadoceras">cadoceras</option>
+        <option value="calymene_trilobite">calymene_trilobite</option>
+        <option value="clypeus_echinoid">clypeus_echinoid</option>
+        <option value="crinoid_general">crinoid_general</option>
+        <option value="cyclothyris_brachiopod">cyclothyris_brachiopod</option>
+        <option value="dactylioceras">dactylioceras</option>
+        <option value="dalmanites_trilobite">dalmanites_trilobite</option>
+        <option value="deshayesites">deshayesites</option>
+        <option value="dinosaur_bone_fragment">dinosaur_bone_fragment</option>
+        <option value="echinocorys_echinoid">echinocorys_echinoid</option>
+        <option value="eldredgeops_phacops">eldredgeops_phacops</option>
+        <option value="euhoplites">euhoplites</option>
+        <option value="gryphaea_fossil">gryphaea_fossil</option>
+        <option value="harpoceras">harpoceras</option>
+        <option value="hemicidaris_echinoid">hemicidaris_echinoid</option>
+        <option value="hildoceras">hildoceras</option>
+        <option value="hoplites">hoplites</option>
+        <option value="hybodus_shark_fin_spine">hybodus_shark_fin_spine</option>
+        <option value="ichthyosaur_general">ichthyosaur_general</option>
+        <option value="kosmoceras">kosmoceras</option>
+        <option value="lithostrotion_coral">lithostrotion_coral</option>
+        <option value="lituites_cephalopod">lituites_cephalopod</option>
+        <option value="megalodon_tooth">megalodon_tooth</option>
+        <option value="micraster_echinoid">micraster_echinoid</option>
+        <option value="montlivaltia_coral">montlivaltia_coral</option>
+        <option value="nautilus_fossil">nautilus_fossil</option>
+        <option value="ogygiocarella_trilobite">ogygiocarella_trilobite</option>
+        <option value="otodus_shark_tooth">otodus_shark_tooth</option>
+        <option value="paradoxides_trilobite">paradoxides_trilobite</option>
+        <option value="pecten_bivalve">pecten_bivalve</option>
+        <option value="perisphinctes">perisphinctes</option>
+        <option value="phylloceras">phylloceras</option>
+        <option value="plant_sigillaria_lepidodendron">plant_sigillaria_lepidodendron</option>
+        <option value="plesiosaur_teeth">plesiosaur_teeth</option>
+        <option value="plesiosaur_vertebra">plesiosaur_vertebra</option>
+        <option value="promicroceras">promicroceras</option>
+        <option value="pycnodont_tooth">pycnodont_tooth</option>
+        <option value="quenstedtoceras">quenstedtoceras</option>
+        <option value="rhynchonella_brachiopod">rhynchonella_brachiopod</option>
+        <option value="schloenbachia">schloenbachia</option>
+        <option value="spondylus_bivalve">spondylus_bivalve</option>
+        <option value="striatolamia_shark_tooth">striatolamia_shark_tooth</option>
+        <option value="terebratula_brachiopod">terebratula_brachiopod</option>
+        <option value="titanites">titanites</option>
+        <option value="trace_fossil_burrow_and_worm_tube">trace_fossil_burrow_and_worm_tube</option>
+        <option value="xipheroceras">xipheroceras</option>
       </select>
 
       <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
-      
       <button id="snapBtn">📷 Take Photo</button>
-      
       <img id="imagePreview" class="preview-img" alt="Preview">
-      
       <button id="uploadBtn" style="display:none;">Upload Photo</button>
-      
       <div id="statusText" class="status"></div>
     </div>
 
@@ -164,8 +248,28 @@
     </div>
   </div>
 
+  <!-- Large Image Inspector Modal -->
+  <div id="imageModal" class="modal" onclick="closeModal()">
+    <img id="modalImg" class="modal-content">
+    <div class="close-modal">&times;</div>
+  </div>
+
   <script>
     const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+    const CATEGORIES = [
+      "amber_fossil", "ammonite_unspecified", "anahoplites", "arietites", "asteroceras", "becheiceras", 
+      "belemnite_guard", "cadoceras", "calymene_trilobite", "clypeus_echinoid", "crinoid_general", 
+      "cyclothyris_brachiopod", "dactylioceras", "dalmanites_trilobite", "deshayesites", "dinosaur_bone_fragment", 
+      "echinocorys_echinoid", "eldredgeops_phacops", "euhoplites", "gryphaea_fossil", "harpoceras", 
+      "hemicidaris_echinoid", "hildoceras", "hoplites", "hybodus_shark_fin_spine", "ichthyosaur_general", 
+      "kosmoceras", "lithostrotion_coral", "lituites_cephalopod", "megalodon_tooth", "micraster_echinoid", 
+      "montlivaltia_coral", "nautilus_fossil", "ogygiocarella_trilobite", "otodus_shark_tooth", 
+      "paradoxides_trilobite", "pecten_bivalve", "perisphinctes", "phylloceras", "plant_sigillaria_lepidodendron", 
+      "plesiosaur_teeth", "plesiosaur_vertebra", "promicroceras", "pycnodont_tooth", "quenstedtoceras", 
+      "rhynchonella_brachiopod", "schloenbachia", "spondylus_bivalve", "striatolamia_shark_tooth", 
+      "terebratula_brachiopod", "titanites", "trace_fossil_burrow_and_worm_tube", "xipheroceras"
+    ];
 
     const cameraInput = document.getElementById('cameraInput');
     const snapBtn = document.getElementById('snapBtn');
@@ -212,11 +316,9 @@
 
     uploadBtn.addEventListener('click', () => {
       const selectedCategory = categorySelect.value;
-
       if (!currentBase64) return;
 
       if (selectedCategory === "UNSORTED") {
-        // Save to Draft Queue
         const tx = db.transaction('drafts', 'readwrite');
         tx.objectStore('drafts').add({
           image: currentBase64,
@@ -228,7 +330,6 @@
           renderQueue();
         };
       } else {
-        // Direct Upload to Apps Script
         sendToGoogleDrive(currentBase64, selectedCategory, null);
       }
     });
@@ -238,27 +339,30 @@
 
       fetch(SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
           image: base64Data,
           category: category,
           timestamp: Date.now()
         })
       })
-      .then(() => {
-        statusText.innerText = "Successfully saved to Drive!";
-        if (draftId !== null) {
-          // Remove from draft queue if it was an unsorted draft
-          const tx = db.transaction('drafts', 'readwrite');
-          tx.objectStore('drafts').delete(draftId);
-          tx.oncomplete = () => renderQueue();
+      .then(res => res.json())
+      .then(res => {
+        if(res.status === "success") {
+          statusText.innerText = "Saved to Drive successfully!";
+          if (draftId !== null) {
+            const tx = db.transaction('drafts', 'readwrite');
+            tx.objectStore('drafts').delete(draftId);
+            tx.oncomplete = () => renderQueue();
+          } else {
+            resetForm();
+          }
         } else {
-          resetForm();
+          statusText.innerText = "Error: " + res.message;
         }
       })
       .catch((err) => {
-        statusText.innerText = "Error uploading. Saved offline.";
+        statusText.innerText = "Network error. Item remains saved locally.";
       });
     }
 
@@ -283,15 +387,16 @@
         items.forEach((item) => {
           const div = document.createElement('div');
           div.className = 'queue-item';
+          
+          let optionsHtml = '<option value="">-- Choose Category --</option>';
+          CATEGORIES.forEach(cat => {
+            optionsHtml += `<option value="${cat}">${cat}</option>`;
+          });
+
           div.innerHTML = `
-            <img src="${item.image}" class="queue-thumb">
+            <img src="${item.image}" class="queue-thumb" onclick="inspectImage('${item.image}')" title="Tap to inspect full size">
             <div class="queue-controls">
-              <select id="select-${item.id}">
-                <option value="">-- Choose Category --</option>
-                <option value="calymene_trilobite">calymene_trilobite</option>
-                <option value="dactylioceras">dactylioceras</option>
-                <option value="amber_fossil">amber_fossil</option>
-              </select>
+              <select id="select-${item.id}">${optionsHtml}</select>
               <button onclick="assignAndUpload(${item.id})">Save to Drive</button>
             </div>
           `;
@@ -305,7 +410,7 @@
       const category = catSelect.value;
 
       if (!category) {
-        alert("Please select a category first.");
+        alert("Please select a fossil category first.");
         return;
       }
 
@@ -319,6 +424,15 @@
       };
     };
 
+    window.inspectImage = function(base64Src) {
+      document.getElementById('modalImg').src = base64Src;
+      document.getElementById('imageModal').style.display = 'flex';
+    };
+
+    window.closeModal = function() {
+      document.getElementById('imageModal').style.display = 'none';
+    };
+
     function resetForm() {
       imagePreview.style.display = 'none';
       uploadBtn.style.display = 'none';
@@ -326,7 +440,6 @@
       cameraInput.value = "";
     }
 
-    // Register Service Worker for PWA offline caching
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
     }
