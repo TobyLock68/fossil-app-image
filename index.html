@@ -16,6 +16,7 @@
       --subtext-color: #8e8e93;
       --border-color: #38383a;
       --success-color: #30d158;
+      --danger-color: #ff453a;
     }
 
     body {
@@ -80,6 +81,20 @@
       opacity: 0.8;
     }
 
+    .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .button-group button {
+      flex: 1;
+    }
+
+    .btn-cancel {
+      background-color: #48484a;
+      color: var(--danger-color);
+    }
+
     .preview-img {
       width: 100%;
       border-radius: 8px;
@@ -124,11 +139,24 @@
       font-size: 0.85rem;
     }
 
-    .queue-controls button {
+    .queue-action-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .queue-action-btns button {
       margin-bottom: 0;
       padding: 6px;
       font-size: 0.85rem;
+      flex: 1;
+    }
+
+    .btn-save {
       background-color: var(--success-color);
+    }
+
+    .btn-delete {
+      background-color: var(--danger-color);
     }
 
     /* Modal Image Inspector */
@@ -237,13 +265,18 @@
       <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
       <button id="snapBtn">📷 Take Photo</button>
       <img id="imagePreview" class="preview-img" alt="Preview">
-      <button id="uploadBtn" style="display:none;">Upload Photo</button>
+      
+      <div id="actionControls" class="button-group" style="display:none;">
+        <button id="cancelBtn" class="btn-cancel">✖ Cancel</button>
+        <button id="uploadBtn">Upload Photo</button>
+      </div>
+
       <div id="statusText" class="status"></div>
     </div>
 
-    <!-- Unsorted Queue Section -->
+    <!-- Drafts Queue Section -->
     <div class="card" id="queueCard" style="display: none;">
-      <label>Unsorted Drafts (<span id="queueCount">0</span>)</label>
+      <label>Offline Drafts (<span id="queueCount">0</span>)</label>
       <div id="queueContainer"></div>
     </div>
   </div>
@@ -273,7 +306,9 @@
 
     const cameraInput = document.getElementById('cameraInput');
     const snapBtn = document.getElementById('snapBtn');
+    const actionControls = document.getElementById('actionControls');
     const uploadBtn = document.getElementById('uploadBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
     const imagePreview = document.getElementById('imagePreview');
     const categorySelect = document.getElementById('categorySelect');
     const statusText = document.getElementById('statusText');
@@ -299,6 +334,11 @@
 
     snapBtn.addEventListener('click', () => cameraInput.click());
 
+    cancelBtn.addEventListener('click', () => {
+      resetForm();
+      statusText.innerText = "Selection cancelled.";
+    });
+
     cameraInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -307,7 +347,7 @@
           currentBase64 = event.target.result;
           imagePreview.src = currentBase64;
           imagePreview.style.display = 'block';
-          uploadBtn.style.display = 'block';
+          actionControls.style.display = 'flex';
           statusText.innerText = "";
         };
         reader.readAsDataURL(file);
@@ -319,20 +359,26 @@
       if (!currentBase64) return;
 
       if (selectedCategory === "UNSORTED") {
-        const tx = db.transaction('drafts', 'readwrite');
-        tx.objectStore('drafts').add({
-          image: currentBase64,
-          timestamp: Date.now()
-        });
-        tx.oncomplete = () => {
-          statusText.innerText = "Saved to Unsorted Drafts!";
-          resetForm();
-          renderQueue();
-        };
+        saveToDrafts(currentBase64, "UNSORTED", "Saved to Drafts!");
       } else {
         sendToGoogleDrive(currentBase64, selectedCategory, null);
       }
     });
+
+    function saveToDrafts(base64Data, category, message) {
+      if (!db) return;
+      const tx = db.transaction('drafts', 'readwrite');
+      tx.objectStore('drafts').add({
+        image: base64Data,
+        category: category,
+        timestamp: Date.now()
+      });
+      tx.oncomplete = () => {
+        statusText.innerText = message;
+        resetForm();
+        renderQueue();
+      };
+    }
 
     function sendToGoogleDrive(base64Data, category, draftId = null) {
       statusText.innerText = "Uploading to Drive...";
@@ -351,9 +397,7 @@
         if(res.status === "success") {
           statusText.innerText = "Saved to Drive successfully!";
           if (draftId !== null) {
-            const tx = db.transaction('drafts', 'readwrite');
-            tx.objectStore('drafts').delete(draftId);
-            tx.oncomplete = () => renderQueue();
+            deleteDraft(draftId);
           } else {
             resetForm();
           }
@@ -362,7 +406,11 @@
         }
       })
       .catch((err) => {
-        statusText.innerText = "Network error. Item remains saved locally.";
+        if (draftId === null) {
+          saveToDrafts(base64Data, category, "Offline: Item saved to Drafts with preselected species.");
+        } else {
+          statusText.innerText = "Still offline. Draft remains saved locally.";
+        }
       });
     }
 
@@ -388,16 +436,20 @@
           const div = document.createElement('div');
           div.className = 'queue-item';
           
-          let optionsHtml = '<option value="">-- Choose Category --</option>';
+          let optionsHtml = '<option value="UNSORTED">-- Unsorted / Assign Later --</option>';
           CATEGORIES.forEach(cat => {
-            optionsHtml += `<option value="${cat}">${cat}</option>`;
+            const isSelected = item.category === cat ? 'selected' : '';
+            optionsHtml += `<option value="${cat}" ${isSelected}>${cat}</option>`;
           });
 
           div.innerHTML = `
             <img src="${item.image}" class="queue-thumb" onclick="inspectImage('${item.image}')" title="Tap to inspect full size">
             <div class="queue-controls">
               <select id="select-${item.id}">${optionsHtml}</select>
-              <button onclick="assignAndUpload(${item.id})">Save to Drive</button>
+              <div class="queue-action-btns">
+                <button class="btn-save" onclick="assignAndUpload(${item.id})">Save to Drive</button>
+                <button class="btn-delete" onclick="deleteDraft(${item.id})">Delete</button>
+              </div>
             </div>
           `;
           queueContainer.appendChild(div);
@@ -409,8 +461,8 @@
       const catSelect = document.getElementById(`select-${id}`);
       const category = catSelect.value;
 
-      if (!category) {
-        alert("Please select a fossil category first.");
+      if (!category || category === "UNSORTED") {
+        alert("Please select a valid fossil species before saving to Drive.");
         return;
       }
 
@@ -424,6 +476,12 @@
       };
     };
 
+    window.deleteDraft = function(id) {
+      const tx = db.transaction('drafts', 'readwrite');
+      tx.objectStore('drafts').delete(id);
+      tx.oncomplete = () => renderQueue();
+    };
+
     window.inspectImage = function(base64Src) {
       document.getElementById('modalImg').src = base64Src;
       document.getElementById('imageModal').style.display = 'flex';
@@ -435,7 +493,7 @@
 
     function resetForm() {
       imagePreview.style.display = 'none';
-      uploadBtn.style.display = 'none';
+      actionControls.style.display = 'none';
       currentBase64 = null;
       cameraInput.value = "";
     }
