@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Fossil Collector</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+  <title>Fossil Collector Pro</title>
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -17,11 +17,12 @@
       --border-color: #38383a;
       --success-color: #30d158;
       --danger-color: #ff453a;
+      --warning-color: #ffd60a;
     }
 
     body {
       margin: 0;
-      padding: 20px;
+      padding: 16px;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-color);
@@ -32,42 +33,78 @@
 
     .container {
       width: 100%;
-      max-width: 450px;
+      max-width: 480px;
     }
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .nav-btn {
+      padding: 10px 4px;
+      font-size: 0.82rem;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--subtext-color);
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .nav-btn.active {
+      background-color: var(--accent-color);
+      color: #fff;
+      border-color: var(--accent-color);
+    }
+
+    .badge {
+      background-color: var(--danger-color);
+      color: white;
+      border-radius: 10px;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      margin-left: 4px;
     }
 
     .card {
       background-color: var(--card-bg);
       border-radius: 12px;
       padding: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       border: 1px solid var(--border-color);
     }
 
     label {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--subtext-color);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      margin-top: 10px;
     }
 
-    select, button {
+    select, button, input {
       width: 100%;
       padding: 12px;
       border-radius: 8px;
       border: 1px solid var(--border-color);
       background-color: #3a3a3c;
       color: var(--text-color);
-      font-size: 1rem;
+      font-size: 0.95rem;
       box-sizing: border-box;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     button {
@@ -77,18 +114,14 @@
       cursor: pointer;
     }
 
-    button:active {
-      opacity: 0.8;
-    }
+    button:active { opacity: 0.8; }
 
     .button-group {
       display: flex;
       gap: 10px;
     }
 
-    .button-group button {
-      flex: 1;
-    }
+    .button-group button { flex: 1; }
 
     .btn-cancel {
       background-color: #48484a;
@@ -104,15 +137,14 @@
 
     .status {
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--subtext-color);
       min-height: 20px;
     }
 
-    /* Queue & Inspector Styling */
     .queue-item {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       background-color: #3a3a3c;
       padding: 10px;
       border-radius: 8px;
@@ -121,79 +153,60 @@
     }
 
     .queue-thumb {
-      width: 70px;
-      height: 70px;
+      width: 65px;
+      height: 65px;
       object-fit: cover;
       border-radius: 6px;
       cursor: pointer;
       border: 2px solid var(--accent-color);
     }
 
-    .queue-controls {
-      flex: 1;
-    }
+    .queue-controls { flex: 1; }
+    .queue-controls select { padding: 6px; font-size: 0.8rem; margin-bottom: 6px; }
 
-    .queue-controls select {
-      margin-bottom: 6px;
-      padding: 6px;
-      font-size: 0.85rem;
-    }
+    .queue-action-btns { display: flex; gap: 6px; }
+    .queue-action-btns button { padding: 6px; font-size: 0.8rem; margin-bottom: 0; flex: 1; }
 
-    .queue-action-btns {
-      display: flex;
-      gap: 6px;
-    }
+    .btn-save { background-color: var(--success-color); }
+    .btn-delete { background-color: var(--danger-color); }
 
-    .queue-action-btns button {
-      margin-bottom: 0;
-      padding: 6px;
-      font-size: 0.85rem;
-      flex: 1;
-    }
-
-    .btn-save {
-      background-color: var(--success-color);
-    }
-
-    .btn-delete {
-      background-color: var(--danger-color);
-    }
-
-    /* Modal Image Inspector */
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.9);
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
+      z-index: 2000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.95);
+      touch-action: none;
+      overflow: hidden;
+    }
+
+    .modal-wrapper {
+      width: 100%; height: 100%;
+      display: flex; justify-content: center; align-items: center;
+      overflow: hidden;
     }
 
     .modal-content {
-      max-width: 90%;
-      max-height: 80vh;
-      border-radius: 8px;
+      max-width: 100%; max-height: 100%;
       object-fit: contain;
+      transition: transform 0.1s ease-out;
+      transform-origin: center center;
     }
 
     .close-modal {
-      color: white;
-      font-size: 30px;
-      font-weight: bold;
-      margin-top: 15px;
-      cursor: pointer;
+      position: absolute; top: 20px; right: 20px;
+      color: white; font-size: 24px;
       background: rgba(255,255,255,0.2);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border-radius: 50%; width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 2001;
+    }
+
+    .location-tag {
+      font-size: 0.75rem;
+      color: var(--warning-color);
+      margin-bottom: 6px;
     }
   </style>
 </head>
@@ -202,106 +215,157 @@
   <div class="container">
     <h1>Fossil Collector</h1>
 
-    <!-- Capture Card -->
-    <div class="card">
-      <label for="categorySelect">Select Target Species</label>
-      <select id="categorySelect">
-        <option value="UNSORTED">-- Unsorted / Assign Later --</option>
-        <option value="amber_fossil">amber_fossil</option>
-        <option value="ammonite_unspecified">ammonite_unspecified</option>
-        <option value="anahoplites">anahoplites</option>
-        <option value="arietites">arietites</option>
-        <option value="asteroceras">asteroceras</option>
-        <option value="becheiceras">becheiceras</option>
-        <option value="belemnite_guard">belemnite_guard</option>
-        <option value="cadoceras">cadoceras</option>
-        <option value="calymene_trilobite">calymene_trilobite</option>
-        <option value="clypeus_echinoid">clypeus_echinoid</option>
-        <option value="crinoid_general">crinoid_general</option>
-        <option value="cyclothyris_brachiopod">cyclothyris_brachiopod</option>
-        <option value="dactylioceras">dactylioceras</option>
-        <option value="dalmanites_trilobite">dalmanites_trilobite</option>
-        <option value="deshayesites">deshayesites</option>
-        <option value="dinosaur_bone_fragment">dinosaur_bone_fragment</option>
-        <option value="echinocorys_echinoid">echinocorys_echinoid</option>
-        <option value="eldredgeops_phacops">eldredgeops_phacops</option>
-        <option value="euhoplites">euhoplites</option>
-        <option value="gryphaea_fossil">gryphaea_fossil</option>
-        <option value="harpoceras">harpoceras</option>
-        <option value="hemicidaris_echinoid">hemicidaris_echinoid</option>
-        <option value="hildoceras">hildoceras</option>
-        <option value="hoplites">hoplites</option>
-        <option value="hybodus_shark_fin_spine">hybodus_shark_fin_spine</option>
-        <option value="ichthyosaur_general">ichthyosaur_general</option>
-        <option value="kosmoceras">kosmoceras</option>
-        <option value="lithostrotion_coral">lithostrotion_coral</option>
-        <option value="lituites_cephalopod">lituites_cephalopod</option>
-        <option value="megalodon_tooth">megalodon_tooth</option>
-        <option value="micraster_echinoid">micraster_echinoid</option>
-        <option value="montlivaltia_coral">montlivaltia_coral</option>
-        <option value="nautilus_fossil">nautilus_fossil</option>
-        <option value="ogygiocarella_trilobite">ogygiocarella_trilobite</option>
-        <option value="otodus_shark_tooth">otodus_shark_tooth</option>
-        <option value="paradoxides_trilobite">paradoxides_trilobite</option>
-        <option value="pecten_bivalve">pecten_bivalve</option>
-        <option value="perisphinctes">perisphinctes</option>
-        <option value="phylloceras">phylloceras</option>
-        <option value="plant_sigillaria_lepidodendron">plant_sigillaria_lepidodendron</option>
-        <option value="plesiosaur_teeth">plesiosaur_teeth</option>
-        <option value="plesiosaur_vertebra">plesiosaur_vertebra</option>
-        <option value="promicroceras">promicroceras</option>
-        <option value="pycnodont_tooth">pycnodont_tooth</option>
-        <option value="quenstedtoceras">quenstedtoceras</option>
-        <option value="rhynchonella_brachiopod">rhynchonella_brachiopod</option>
-        <option value="schloenbachia">schloenbachia</option>
-        <option value="spondylus_bivalve">spondylus_bivalve</option>
-        <option value="striatolamia_shark_tooth">striatolamia_shark_tooth</option>
-        <option value="terebratula_brachiopod">terebratula_brachiopod</option>
-        <option value="titanites">titanites</option>
-        <option value="trace_fossil_burrow_and_worm_tube">trace_fossil_burrow_and_worm_tube</option>
-        <option value="xipheroceras">xipheroceras</option>
-      </select>
+    <div class="nav-grid">
+      <button class="nav-btn active" onclick="switchTab('uploadTab')">📷 Upload</button>
+      <button class="nav-btn" onclick="switchTab('identifyTab')">🔍 Identify</button>
+      <button class="nav-btn" onclick="switchTab('queueTab')">📥 Queue <span id="queueBadge" class="badge" style="display:none;">0</span></button>
+    </div>
 
-      <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
-      <button id="snapBtn">📷 Take Photo</button>
-      <img id="imagePreview" class="preview-img" alt="Preview">
-      
-      <div id="actionControls" class="button-group" style="display:none;">
-        <button id="cancelBtn" class="btn-cancel">&#10005; Cancel</button>
-        <button id="uploadBtn">Upload Photo</button>
+    <!-- TAB 1: UPLOAD -->
+    <div id="uploadTab" class="tab-content">
+      <div class="card">
+        <label for="groupSelect">1. Fossil Group</label>
+        <select id="groupSelect" onchange="updateSpeciesDropdown()">
+          <option value="ALL">-- Show All Species --</option>
+          <option value="AMMONITE">Ammonites & Cephalopods</option>
+          <option value="TRILOBITE">Trilobites</option>
+          <option value="SHELL">Brachiopods & Bivalves</option>
+          <option value="ECHINOID">Echinoids (Sea Urchins)</option>
+          <option value="VERTEBRATE">Vertebrates, Teeth & Reptiles</option>
+          <option value="CORAL_PLANT">Corals, Crinoids & Plants</option>
+          <option value="OTHER">Trace Fossils & Amber</option>
+        </select>
+
+        <label for="categorySelect">2. Target Species</label>
+        <select id="categorySelect" onchange="showLocationInfo()">
+          <option value="UNSORTED">-- Unsorted / Assign Later --</option>
+        </select>
+
+        <div id="locationInfo" class="location-tag"></div>
+
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
+        <button id="snapBtn">📷 Take Photo</button>
+        <img id="imagePreview" class="preview-img" alt="Preview">
+        
+        <div id="actionControls" class="button-group" style="display:none;">
+          <button id="cancelBtn" class="btn-cancel">&#10005; Cancel</button>
+          <button id="uploadBtn">Upload Photo</button>
+        </div>
+
+        <div id="statusText" class="status"></div>
       </div>
-
-      <div id="statusText" class="status"></div>
     </div>
 
-    <!-- Drafts Queue Section -->
-    <div class="card" id="queueCard" style="display: none;">
-      <label>Offline Drafts (<span id="queueCount">0</span>)</label>
-      <div id="queueContainer"></div>
+    <!-- TAB 2: IDENTIFY (OFFLINE PLACEHOLDER) -->
+    <div id="identifyTab" class="tab-content" style="display: none;">
+      <div class="card">
+        <h3>Offline Identification</h3>
+        <p style="font-size: 0.85rem; color: var(--subtext-color);">
+          Filter by target region or formation to constrain offline classification.
+        </p>
+
+        <label for="locationFilter">Found Location / Region</label>
+        <select id="locationFilter">
+          <option value="ALL">-- Any Location --</option>
+          <option value="Charmouth / Lyme Regis">Charmouth / Lyme Regis (Blue Lias)</option>
+          <option value="Whitby / Yorkshire Coast">Whitby / Yorkshire Coast</option>
+          <option value="Folkestone / Gault Clay">Folkestone / Gault Clay</option>
+          <option value="Cotswolds / Inferior Oolite">Cotswolds / Inferior Oolite</option>
+          <option value="Isle of Wight">Isle of Wight</option>
+        </select>
+
+        <button onclick="alert('Offline ML model inference module pending integration.')">🔍 Run Offline Identifier</button>
+      </div>
     </div>
+
+    <!-- TAB 3: DRAFTS QUEUE -->
+    <div id="queueTab" class="tab-content" style="display: none;">
+      <div class="card">
+        <h3>Offline Drafts (<span id="queueCount">0</span>)</h3>
+        <p style="font-size:0.8rem; color: var(--subtext-color);">Tap image thumbnail to inspect with pinch-to-zoom.</p>
+        <div id="queueContainer"></div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Large Image Inspector Modal -->
-  <div id="imageModal" class="modal" onclick="closeModal()">
-    <img id="modalImg" class="modal-content">
-    <div class="close-modal">&times;</div>
+  <!-- ZOOM MODAL -->
+  <div id="imageModal" class="modal">
+    <div class="close-modal" onclick="closeModal()">&#10005;</div>
+    <div class="modal-wrapper" id="modalWrapper">
+      <img id="modalImg" class="modal-content">
+    </div>
   </div>
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLACQ3MCDFxzv4Q9zslvSbTt4oxOtfud5uqkvdITCwG2SB6CmvCeNs4JeTbm4DQqU/exec";
 
-    const CATEGORIES = [
-      "amber_fossil", "ammonite_unspecified", "anahoplites", "arietites", "asteroceras", "becheiceras", 
-      "belemnite_guard", "cadoceras", "calymene_trilobite", "clypeus_echinoid", "crinoid_general", 
-      "cyclothyris_brachiopod", "dactylioceras", "dalmanites_trilobite", "deshayesites", "dinosaur_bone_fragment", 
-      "echinocorys_echinoid", "eldredgeops_phacops", "euhoplites", "gryphaea_fossil", "harpoceras", 
-      "hemicidaris_echinoid", "hildoceras", "hoplites", "hybodus_shark_fin_spine", "ichthyosaur_general", 
-      "kosmoceras", "lithostrotion_coral", "lituites_cephalopod", "megalodon_tooth", "micraster_echinoid", 
-      "montlivaltia_coral", "nautilus_fossil", "ogygiocarella_trilobite", "otodus_shark_tooth", 
-      "paradoxides_trilobite", "pecten_bivalve", "perisphinctes", "phylloceras", "plant_sigillaria_lepidodendron", 
-      "plesiosaur_teeth", "plesiosaur_vertebra", "promicroceras", "pycnodont_tooth", "quenstedtoceras", 
-      "rhynchonella_brachiopod", "schloenbachia", "spondylus_bivalve", "striatolamia_shark_tooth", 
-      "terebratula_brachiopod", "titanites", "trace_fossil_burrow_and_worm_tube", "xipheroceras"
+    const SPECIES_DATA = [
+      { id: "acanthoceras", group: "AMMONITE", name: "Acanthoceras", location: "Cretaceous Chalk / Folkestone" },
+      { id: "amaltheus", group: "AMMONITE", name: "Amaltheus", location: "Dyrham Formation, Ilminster, Somerset" },
+      { id: "amber_fossil", group: "OTHER", name: "Amber Fossil", location: "Baltic / UK East Coast" },
+      { id: "anahoplites", group: "AMMONITE", name: "Anahoplites", location: "Gault Formation, Folkestone, Kent" },
+      { id: "arietites", group: "AMMONITE", name: "Arietites", location: "Lyme Regis Blue Lias" },
+      { id: "aspidoceras", group: "AMMONITE", name: "Aspidoceras", location: "Oxford Clay / Kimmeridge" },
+      { id: "asteroceras", group: "AMMONITE", name: "Asteroceras", location: "Charmouth Mudstone Formation, Lyme Regis, Dorset" },
+      { id: "becheiceras", group: "AMMONITE", name: "Becheiceras", location: "Dorset Coast" },
+      { id: "belemnite_guard", group: "AMMONITE", name: "Belemnite Guard", location: "Whitby, Saltwick, Yorkshire / Fletton, Peterborough" },
+      { id: "cadoceras", group: "AMMONITE", name: "Cadoceras", location: "Kellaways Formation, Wiltshire / Oxford Clay" },
+      { id: "calymene_trilobite", group: "TRILOBITE", name: "Calymene Trilobite", location: "Dudley / Silurian" },
+      { id: "cardioceras", group: "AMMONITE", name: "Cardioceras", location: "Oxford Clay Formation, St Ives, Huntingdon / Cambridgeshire" },
+      { id: "clypeus_echinoid", group: "ECHINOID", name: "Clypeus Echinoid", location: "Cotswolds Oolite" },
+      { id: "crinoid_general", group: "CORAL_PLANT", name: "Crinoid (General)", location: "Charmouth Mudstone, Lyme Regis / Forest Marble, Bradford-on-Avon" },
+      { id: "cyclothyris_brachiopod", group: "SHELL", name: "Cyclothyris Brachiopod", location: "Cretaceous Greensand" },
+      { id: "dactylioceras", group: "AMMONITE", name: "Dactylioceras", location: "Whitby Mudstone Formation, Whitby, Yorkshire" },
+      { id: "dalmanites_trilobite", group: "TRILOBITE", name: "Dalmanites Trilobite", location: "Silurian / Welsh Borders" },
+      { id: "deshayesites", group: "AMMONITE", name: "Deshayesites", location: "Ferruginous Sands Formation, Atherfield, Isle of Wight" },
+      { id: "echinocorys_echinoid", group: "ECHINOID", name: "Echinocorys Echinoid", location: "Southern Chalk Cliffs" },
+      { id: "echioceras", group: "AMMONITE", name: "Echioceras", location: "Charmouth Mudstone Formation, Kilmersdon, Somerset" },
+      { id: "eldredgeops_phacops", group: "TRILOBITE", name: "Eldredgeops / Phacops", location: "Devonian Formations" },
+      { id: "euhoplites", group: "AMMONITE", name: "Euhoplites", location: "Lower Gault Member, Folkestone, Kent" },
+      { id: "garantiana", group: "AMMONITE", name: "Garantiana", location: "Dorset Inferior Oolite" },
+      { id: "gryphaea_fossil", group: "SHELL", name: "Gryphaea (Devil's Toe)", location: "Lias Clays / Scunthorpe" },
+      { id: "hamites", group: "AMMONITE", name: "Hamites (Heteromorph)", location: "Lower Gault Member, Folkestone, Kent" },
+      { id: "harpoceras", group: "AMMONITE", name: "Harpoceras", location: "Whitby Mudstone Formation, Lincoln, Lincolnshire" },
+      { id: "hemicidaris_echinoid", group: "ECHINOID", name: "Hemicidaris Echinoid", location: "Jurassic Oolites" },
+      { id: "hildoceras", group: "AMMONITE", name: "Hildoceras", location: "Whitby Mudstone Formation, Whitby, Yorkshire" },
+      { id: "hoplites", group: "AMMONITE", name: "Hoplites", location: "Lower Gault Member, Folkestone, Kent" },
+      { id: "hybodus_shark_fin_spine", group: "VERTEBRATE", name: "Hybodus Shark Spine", location: "Lyme Regis / Wealden" },
+      { id: "kosmoceras", group: "AMMONITE", name: "Kosmoceras", location: "Oxford Clay Formation, Peterborough / Oxford" },
+      { id: "liparoceras", group: "AMMONITE", name: "Liparoceras", location: "Charmouth Mudstone Formation, Cheltenham, Gloucestershire" },
+      { id: "lithostrotion_coral", group: "CORAL_PLANT", name: "Lithostrotion Coral", location: "Carboniferous Limestone" },
+      { id: "lituites_cephalopod", group: "AMMONITE", name: "Lituites Cephalopod", location: "Ordovician Strata" },
+      { id: "macrocephalites", group: "AMMONITE", name: "Macrocephalites", location: "Cornbrash Formation, Scarborough, Yorkshire" },
+      { id: "mantelliceras", group: "AMMONITE", name: "Mantelliceras", location: "West Melbury Marly Chalk Formation, Sussex" },
+      { id: "megalodon_tooth", group: "VERTEBRATE", name: "Megalodon Tooth", location: "Neogene Deposits" },
+      { id: "mesozoic_marine_reptiles", group: "VERTEBRATE", name: "Marine Reptile Fragment", location: "Lyme Regis / Oxford Clay" },
+      { id: "micraster_echinoid", group: "ECHINOID", name: "Micraster Echinoid", location: "Chalk Formations" },
+      { id: "montlivaltia_coral", group: "CORAL_PLANT", name: "Montlivaltia Coral", location: "Jurassic Oolite" },
+      { id: "mortoniceras", group: "AMMONITE", name: "Mortoniceras", location: "Upper Greensand Formation, Potterne, Wiltshire" },
+      { id: "nautilus_fossil", group: "AMMONITE", name: "Nautilus Fossil", location: "Ferruginous Sands Formation, Isle of Wight / London Clay" },
+      { id: "ogygiocarella_trilobite", group: "TRILOBITE", name: "Ogygiocarella Trilobite", location: "Ordovician Wales" },
+      { id: "otodus_shark_tooth", group: "VERTEBRATE", name: "Otodus Shark Tooth", location: "Eocene London Clay" },
+      { id: "paradoxides_trilobite", group: "TRILOBITE", name: "Paradoxides Trilobite", location: "Cambrian Strata" },
+      { id: "parkinsonia", group: "AMMONITE", name: "Parkinsonia", location: "Upper Inferior Oolite Group, Sherborne, Dorset" },
+      { id: "pecten_bivalve", group: "SHELL", name: "Pecten Bivalve", location: "Widespread Mesozoic" },
+      { id: "perisphinctes", group: "AMMONITE", name: "Perisphinctes", location: "Kingston Formation, Marcham, Berkshire" },
+      { id: "phylloceras", group: "AMMONITE", name: "Phylloceras", location: "Whitby Mudstone Formation, Whitby, Yorkshire" },
+      { id: "pleuroceras", group: "AMMONITE", name: "Pleuroceras", location: "Charmouth Mudstone Formation, Down Cliff, Bridport, Dorset" },
+      { id: "promicroceras", group: "AMMONITE", name: "Promicroceras", location: "Charmouth Mudstone Formation, Charmouth, Dorset" },
+      { id: "psiloceras", group: "AMMONITE", name: "Psiloceras", location: "Blue Lias Formation, Watchet, Somerset" },
+      { id: "quenstedtoceras", group: "AMMONITE", name: "Quenstedtoceras", location: "Oxford Clay Formation, Ashton Keynes, Wiltshire" },
+      { id: "rhynchonella_brachiopod", group: "SHELL", name: "Rhynchonella", location: "Jurassic / Cretaceous" },
+      { id: "ringsteadia", group: "AMMONITE", name: "Ringsteadia", location: "Kimmeridge Clay Dorset" },
+      { id: "scaphites", group: "AMMONITE", name: "Scaphites (Heteromorph)", location: "Zig Zag Chalk Formation, Dorset" },
+      { id: "schloenbachia", group: "AMMONITE", name: "Schloenbachia", location: "West Melbury Marly Chalk Formation, Evershot, Dorset" },
+      { id: "spondylus_bivalve", group: "SHELL", name: "Spondylus Bivalve", location: "Chalk Formations" },
+      { id: "stephanoceras", group: "AMMONITE", name: "Stephanoceras", location: "Middle Inferior Oolite Group, Dundry, Somerset" },
+      { id: "striatolamia_shark_tooth", group: "VERTEBRATE", name: "Striatolamia Shark Tooth", location: "London Clay" },
+      { id: "terebratula_brachiopod", group: "SHELL", name: "Terebratula", location: "Jurassic Limestones" },
+      { id: "titanites", group: "AMMONITE", name: "Titanites", location: "Portland Stone Formation, Tisbury, Wiltshire" },
+      { id: "trace_fossils", group: "OTHER", name: "Trace Fossils / Burrows", location: "Widespread" },
+      { id: "tragophylloceras", group: "AMMONITE", name: "Tragophylloceras", location: "Charmouth Mudstone Formation, Golden Cap, Dorset" },
+      { id: "xipheroceras", group: "AMMONITE", name: "Xipheroceras", location: "Charmouth Mudstone Formation, Charmouth, Dorset" }
     ];
 
     const cameraInput = document.getElementById('cameraInput');
@@ -310,17 +374,18 @@
     const uploadBtn = document.getElementById('uploadBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     const imagePreview = document.getElementById('imagePreview');
+    const groupSelect = document.getElementById('groupSelect');
     const categorySelect = document.getElementById('categorySelect');
     const statusText = document.getElementById('statusText');
-    const queueCard = document.getElementById('queueCard');
+    const locationInfo = document.getElementById('locationInfo');
     const queueContainer = document.getElementById('queueContainer');
     const queueCount = document.getElementById('queueCount');
+    const queueBadge = document.getElementById('queueBadge');
 
     let currentBase64 = null;
     let db;
 
-    // Initialize IndexedDB
-    const request = indexedDB.open('FossilCollectorDB', 2);
+    const request = indexedDB.open('FossilCollectorDB', 3);
     request.onupgradeneeded = (e) => {
       db = e.target.result;
       if (!db.objectStoreNames.contains('drafts')) {
@@ -332,11 +397,41 @@
       renderQueue();
     };
 
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).style.display = 'block';
+      event.currentTarget.classList.add('active');
+    }
+
+    function updateSpeciesDropdown() {
+      const selectedGroup = groupSelect.value;
+      categorySelect.innerHTML = '<option value="UNSORTED">-- Unsorted / Assign Later --</option>';
+      
+      const filtered = selectedGroup === "ALL" 
+        ? SPECIES_DATA 
+        : SPECIES_DATA.filter(s => s.group === selectedGroup);
+
+      filtered.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = s.name;
+        categorySelect.appendChild(opt);
+      });
+      showLocationInfo();
+    }
+
+    function showLocationInfo() {
+      const val = categorySelect.value;
+      const found = SPECIES_DATA.find(s => s.id === val);
+      locationInfo.innerText = found ? `📍 Common Location: ${found.location}` : "";
+    }
+
     snapBtn.addEventListener('click', () => cameraInput.click());
 
     cancelBtn.addEventListener('click', () => {
       resetForm();
-      statusText.innerText = "Selection cancelled.";
+      statusText.innerText = "Cancelled.";
     });
 
     cameraInput.addEventListener('change', (e) => {
@@ -348,7 +443,6 @@
           imagePreview.src = currentBase64;
           imagePreview.style.display = 'block';
           actionControls.style.display = 'flex';
-          statusText.innerText = "";
         };
         reader.readAsDataURL(file);
       }
@@ -359,7 +453,7 @@
       if (!currentBase64) return;
 
       if (selectedCategory === "UNSORTED") {
-        saveToDrafts(currentBase64, "UNSORTED", "Saved to Drafts!");
+        saveToDrafts(currentBase64, "UNSORTED", "Saved to Drafts Queue!");
       } else {
         sendToGoogleDrive(currentBase64, selectedCategory, null);
       }
@@ -386,30 +480,23 @@
       fetch(SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          image: base64Data,
-          category: category,
-          timestamp: Date.now()
-        })
+        body: JSON.stringify({ image: base64Data, category: category, timestamp: Date.now() })
       })
       .then(res => res.json())
       .then(res => {
         if(res.status === "success") {
-          statusText.innerText = "Saved to Drive successfully!";
-          if (draftId !== null) {
-            deleteDraft(draftId);
-          } else {
-            resetForm();
-          }
+          statusText.innerText = "Saved to Drive!";
+          if (draftId !== null) deleteDraft(draftId);
+          else resetForm();
         } else {
           statusText.innerText = "Error: " + res.message;
         }
       })
-      .catch((err) => {
+      .catch(() => {
         if (draftId === null) {
-          saveToDrafts(base64Data, category, "Offline: Item saved to Drafts with preselected species.");
+          saveToDrafts(base64Data, category, "Offline: Saved to Queue.");
         } else {
-          statusText.innerText = "Still offline. Draft remains saved locally.";
+          statusText.innerText = "Offline. Remains in Queue.";
         }
       });
     }
@@ -423,31 +510,27 @@
       request.onsuccess = () => {
         const items = request.result;
         queueCount.innerText = items.length;
+        queueBadge.innerText = items.length;
+        queueBadge.style.display = items.length > 0 ? 'inline-block' : 'none';
 
-        if (items.length === 0) {
-          queueCard.style.display = 'none';
-          return;
-        }
-
-        queueCard.style.display = 'block';
-        queueContainer.innerHTML = '';
+        queueContainer.innerHTML = items.length === 0 ? '<p style="font-size:0.85rem; color:var(--subtext-color);">Queue is empty.</p>' : '';
 
         items.forEach((item) => {
           const div = document.createElement('div');
           div.className = 'queue-item';
-          
+
           let optionsHtml = '<option value="UNSORTED">-- Unsorted / Assign Later --</option>';
-          CATEGORIES.forEach(cat => {
-            const isSelected = item.category === cat ? 'selected' : '';
-            optionsHtml += `<option value="${cat}" ${isSelected}>${cat}</option>`;
+          SPECIES_DATA.forEach(s => {
+            const isSelected = item.category === s.id ? 'selected' : '';
+            optionsHtml += `<option value="${s.id}" ${isSelected}>${s.name}</option>`;
           });
 
           div.innerHTML = `
-            <img src="${item.image}" class="queue-thumb" onclick="inspectImage('${item.image}')" title="Tap to inspect full size">
+            <img src="${item.image}" class="queue-thumb" onclick="openZoomModal('${item.image}')">
             <div class="queue-controls">
               <select id="select-${item.id}">${optionsHtml}</select>
               <div class="queue-action-btns">
-                <button class="btn-save" onclick="assignAndUpload(${item.id})">Save to Drive</button>
+                <button class="btn-save" onclick="assignAndUpload(${item.id})">Upload</button>
                 <button class="btn-delete" onclick="deleteDraft(${item.id})">Delete</button>
               </div>
             </div>
@@ -459,36 +542,19 @@
 
     window.assignAndUpload = function(id) {
       const catSelect = document.getElementById(`select-${id}`);
-      const category = catSelect.value;
-
-      if (!category || category === "UNSORTED") {
-        alert("Please select a valid fossil species before saving to Drive.");
+      if (!catSelect.value || catSelect.value === "UNSORTED") {
+        alert("Please select a species first.");
         return;
       }
-
       const tx = db.transaction('drafts', 'readonly');
-      const store = tx.objectStore('drafts');
-      const request = store.get(id);
-
-      request.onsuccess = () => {
-        const item = request.result;
-        sendToGoogleDrive(item.image, category, id);
-      };
+      const request = tx.objectStore('drafts').get(id);
+      request.onsuccess = () => sendToGoogleDrive(request.result.image, catSelect.value, id);
     };
 
     window.deleteDraft = function(id) {
       const tx = db.transaction('drafts', 'readwrite');
       tx.objectStore('drafts').delete(id);
       tx.oncomplete = () => renderQueue();
-    };
-
-    window.inspectImage = function(base64Src) {
-      document.getElementById('modalImg').src = base64Src;
-      document.getElementById('imageModal').style.display = 'flex';
-    };
-
-    window.closeModal = function() {
-      document.getElementById('imageModal').style.display = 'none';
     };
 
     function resetForm() {
@@ -498,9 +564,46 @@
       cameraInput.value = "";
     }
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
+    let currentScale = 1;
+    let startDist = 0;
+    const modalImg = document.getElementById('modalImg');
+
+    window.openZoomModal = function(src) {
+      modalImg.src = src;
+      currentScale = 1;
+      modalImg.style.transform = `scale(1)`;
+      document.getElementById('imageModal').style.display = 'block';
+    };
+
+    window.closeModal = function() {
+      document.getElementById('imageModal').style.display = 'none';
+    };
+
+    const modalWrapper = document.getElementById('modalWrapper');
+    modalWrapper.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        startDist = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY
+        );
+      }
+    });
+
+    modalWrapper.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2) {
+        const dist = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY
+        );
+        const factor = dist / startDist;
+        currentScale = Math.min(Math.max(1, currentScale * factor), 4);
+        modalImg.style.transform = `scale(${currentScale})`;
+        startDist = dist;
+      }
+    });
+
+    updateSpeciesDropdown();
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
   </script>
 </body>
 </html>

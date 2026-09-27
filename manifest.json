@@ -1,8 +1,24 @@
 {
   "short_name": "Fossils",
-  "name": "Fossil Dataset Collector",
-  "start_url": "index.html",
+  "name": "Fossil Collector Pro",
+  "description": "Offline-first field cataloging and species identification app for fossil hunting.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./index.html",
   "background_color": "#1c1c1e",
   "theme_color": "#1c1c1e",
-  "display": "standalone"
+  "display": "standalone",
+  "orientation": "portrait"
 }
