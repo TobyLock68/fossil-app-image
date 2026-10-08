@@ -32,7 +32,7 @@
       align-items: center;
     }
 
-    /* --- SPLASH SCREEN STYLES --- */
+    /* --- SEAMLESS SPLASH SCREEN STYLES --- */
     #splash-screen {
       position: fixed;
       top: 0;
@@ -46,6 +46,7 @@
       align-items: center;
       z-index: 9999;
       transition: opacity 0.8s ease, visibility 0.8s ease;
+      overflow: hidden;
     }
 
     #splash-screen.hidden {
@@ -53,52 +54,72 @@
       visibility: hidden;
     }
 
-    .neon-svg {
-      width: 220px;
+    .neon-wrapper {
+      position: relative;
+      width: 280px;
       height: 220px;
-      /* Cyan neon glow filters */
-      filter: drop-shadow(0 0 4px #ffffff) 
-              drop-shadow(0 0 10px var(--neon-blue)) 
-              drop-shadow(0 0 25px var(--neon-blue));
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
+    .neon-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible; /* Prevents square box clipping */
+    }
+
+    /* Base properties for paths */
     .neon-path {
       fill: none;
-      stroke: var(--neon-blue);
-      stroke-width: 3.5;
       stroke-linecap: round;
       stroke-linejoin: round;
-      stroke-dasharray: 1000;
-      stroke-dashoffset: 1000;
-      animation: drawClockwise 2.5s ease-in-out forwards infinite;
+      stroke-dasharray: 1200;
+      stroke-dashoffset: 1200;
+      animation: drawClockwise 2.8s ease-in-out infinite;
+    }
+
+    /* Soft Cyan Glow Layer */
+    .neon-path.glow {
+      stroke: var(--neon-blue);
+      stroke-width: 8px;
+      opacity: 0.6;
+      filter: blur(6px);
+    }
+
+    /* Bright Cyan Inner Core Layer */
+    .neon-path.core {
+      stroke: #e0ffff;
+      stroke-width: 2.5px;
+      opacity: 0.95;
     }
 
     @keyframes drawClockwise {
       0% {
-        stroke-dashoffset: 1000;
-        opacity: 0.3;
+        stroke-dashoffset: 1200;
+        opacity: 0.1;
       }
-      50% {
+      45% {
         stroke-dashoffset: 0;
         opacity: 1;
       }
-      90% {
+      85% {
         stroke-dashoffset: 0;
         opacity: 1;
       }
       100% {
-        stroke-dashoffset: -1000;
-        opacity: 0.2;
+        stroke-dashoffset: -1200;
+        opacity: 0.1;
       }
     }
 
     .splash-title {
-      margin-top: 30px;
+      margin-top: 20px;
       font-size: 1.1rem;
       letter-spacing: 3px;
       text-transform: uppercase;
       color: #ffffff;
-      text-shadow: 0 0 8px var(--neon-blue);
+      text-shadow: 0 0 8px var(--neon-blue), 0 0 16px var(--neon-blue);
       font-weight: 600;
     }
 
@@ -284,35 +305,69 @@
 </head>
 <body>
 
-  <!-- NEON SPLASH SCREEN -->
+  <!-- REFINED NEON SPLASH SCREEN -->
   <div id="splash-screen">
-    <svg class="neon-svg" viewBox="0 0 200 200">
-      <!-- Spiral Ammonite Shell + Tentacles -->
-      <path class="neon-path" d="
-        M 100 100 
-        m -5 0 a 5 5 0 1 1 10 0 a 5 5 0 1 1 -10 0
-        m -10 0 a 15 15 0 1 1 30 0 a 15 15 0 1 1 -30 0
-        m -15 0 a 30 30 0 1 1 60 0 a 30 30 0 1 1 -60 0
-        m -20 0 a 50 50 0 1 1 100 0 a 50 50 0 1 1 -100 0
-        M 150 100 
-        C 150 130 130 155 100 155
-        C 75 155 60 140 50 120
-        C 40 135 30 145 20 135
-        C 15 125 30 120 40 115
-        C 25 115 10 110 15 98
-        C 20 90 35 100 45 105
-        C 30 95 20 85 28 75
-        C 35 68 45 85 55 95
-      " />
-      <!-- Rib lines on outer shell -->
-      <path class="neon-path" d="
-        M 100 50 L 100 35
-        M 135 65 L 148 55
-        M 150 100 L 165 100
-        M 135 135 L 148 145
-        M 100 150 L 100 165
-      " />
-    </svg>
+    <div class="neon-wrapper">
+      <svg class="neon-svg" viewBox="0 0 300 240">
+        <!-- Glow Backdrop Layer -->
+        <g class="glow-layer">
+          <path class="neon-path glow" d="
+            M 195 125
+            A 15 15 0 1 1 200 110
+            A 35 35 0 1 1 220 150
+            A 60 60 0 1 1 140 185
+            A 85 85 0 1 1 230 60
+            A 100 100 0 0 1 265 140
+            C 260 190 205 215 145 210
+            C 120 208 135 180 150 160
+          " />
+          <path class="neon-path glow" d="
+            M 210 110 Q 225 100 235 90
+            M 220 130 Q 240 128 255 125
+            M 210 155 Q 235 165 248 175
+            M 180 170 Q 195 190 205 200
+            M 150 175 Q 155 195 160 208
+            M 125 155 Q 115 175 105 190
+          " />
+          <circle class="neon-path glow" cx="130" cy="160" r="18" />
+          <ellipse class="neon-path glow" cx="130" cy="160" rx="10" ry="4" />
+          <path class="neon-path glow" d="
+            M 115 150 C 90 140 70 145 45 155 C 30 160 20 170 30 172 C 45 175 65 165 95 165
+            M 118 165 C 90 160 65 175 40 180 C 25 183 20 195 32 192 C 50 188 75 180 105 175
+            M 122 175 C 100 180 80 195 55 200 C 40 203 35 210 48 208 C 65 205 85 190 115 182
+          " />
+        </g>
+
+        <!-- Sharp Core Lines Layer -->
+        <g class="core-layer">
+          <path class="neon-path core" d="
+            M 195 125
+            A 15 15 0 1 1 200 110
+            A 35 35 0 1 1 220 150
+            A 60 60 0 1 1 140 185
+            A 85 85 0 1 1 230 60
+            A 100 100 0 0 1 265 140
+            C 260 190 205 215 145 210
+            C 120 208 135 180 150 160
+          " />
+          <path class="neon-path core" d="
+            M 210 110 Q 225 100 235 90
+            M 220 130 Q 240 128 255 125
+            M 210 155 Q 235 165 248 175
+            M 180 170 Q 195 190 205 200
+            M 150 175 Q 155 195 160 208
+            M 125 155 Q 115 175 105 190
+          " />
+          <circle class="neon-path core" cx="130" cy="160" r="18" />
+          <ellipse class="neon-path core" cx="130" cy="160" rx="10" ry="4" />
+          <path class="neon-path core" d="
+            M 115 150 C 90 140 70 145 45 155 C 30 160 20 170 30 172 C 45 175 65 165 95 165
+            M 118 165 C 90 160 65 175 40 180 C 25 183 20 195 32 192 C 50 188 75 180 105 175
+            M 122 175 C 100 180 80 195 55 200 C 40 203 35 210 48 208 C 65 205 85 190 115 182
+          " />
+        </g>
+      </svg>
+    </div>
     <div class="splash-title">Fossil Collector</div>
   </div>
 
@@ -407,7 +462,7 @@
       setTimeout(() => {
         const splash = document.getElementById('splash-screen');
         if (splash) splash.classList.add('hidden');
-      }, 2200); // Hides after 2.2 seconds
+      }, 2400);
     });
 
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLACQ3MCDFxzv4Q9zslvSbTt4oxOtfud5uqkvdITCwG2SB6CmvCeNs4JeTbm4DQqU/exec";
