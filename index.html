@@ -56,8 +56,8 @@
 
     .neon-wrapper {
       position: relative;
-      width: 240px;
-      height: 240px;
+      width: 260px;
+      height: 260px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -66,57 +66,25 @@
     .neon-svg {
       width: 100%;
       height: 100%;
-      overflow: visible;
+      filter: drop-shadow(0 0 10px var(--neon-blue)) drop-shadow(0 0 20px var(--neon-blue));
+      animation: neonPulse 3s ease-in-out infinite alternate;
     }
 
-    /* Clean Icon Stroke Lines */
-    .icon-line {
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 1000;
-      stroke-dashoffset: 1000;
-      animation: drawClockwise 2.8s ease-in-out infinite;
-    }
-
-    /* Glow Layer */
-    .icon-line.glow {
-      stroke: var(--neon-blue);
-      stroke-width: 6px;
-      opacity: 0.7;
-      filter: blur(5px);
-    }
-
-    /* Core Layer */
-    .icon-line.core {
-      stroke: #ffffff;
-      stroke-width: 2.5px;
-      opacity: 0.95;
-    }
-
-    @keyframes drawClockwise {
+    @keyframes neonPulse {
       0% {
-        stroke-dashoffset: 1000;
-        opacity: 0.1;
-      }
-      45% {
-        stroke-dashoffset: 0;
-        opacity: 1;
-      }
-      85% {
-        stroke-dashoffset: 0;
-        opacity: 1;
+        filter: drop-shadow(0 0 4px var(--neon-blue)) drop-shadow(0 0 12px var(--neon-blue));
+        opacity: 0.85;
       }
       100% {
-        stroke-dashoffset: -1000;
-        opacity: 0.1;
+        filter: drop-shadow(0 0 12px var(--neon-blue)) drop-shadow(0 0 28px var(--neon-blue));
+        opacity: 1;
       }
     }
 
     .splash-title {
-      margin-top: 24px;
-      font-size: 1.1rem;
-      letter-spacing: 3px;
+      margin-top: 28px;
+      font-size: 1.15rem;
+      letter-spacing: 4px;
       text-transform: uppercase;
       color: #ffffff;
       text-shadow: 0 0 8px var(--neon-blue), 0 0 16px var(--neon-blue);
@@ -292,8 +260,7 @@
       color: white; font-size: 24px;
       background: rgba(255,255,255,0.2);
       border-radius: 50%; width: 40px; height: 40px;
-      display: flex; align-items: center; justify-content: justify-content;
-      align-items: center;
+      display: flex; align-items: center; justify-content: center;
       cursor: pointer; z-index: 2001;
     }
 
@@ -309,68 +276,36 @@
   <!-- GEOMETRIC NAUTILUS SPLASH SCREEN -->
   <div id="splash-screen">
     <div class="neon-wrapper">
-      <svg class="neon-svg" viewBox="0 0 200 200">
-        <!-- Glow Layer -->
-        <g class="glow-layer">
-          <!-- Main Outer Silhouette Path -->
-          <path class="icon-line glow" d="
-            M 100,10 
-            C 145,10 175,40 170,85 
-            C 165,125 140,165 100,175 
-            C 55,185 20,150 15,110 
-            C 10,65 40,25 80,20 
-            C 115,15 140,40 140,75 
-            C 140,105 115,125 90,120 
-            C 70,115 65,95 75,80 
-            C 82,70 95,72 98,82
-          " />
+      <svg class="neon-svg" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer Flared Shell Boundary -->
+        <path d="M 235,50 C 265,110 250,175 205,225 C 160,270 95,275 45,230 C 0,180 0,100 45,45 C 95,0 170,10 215,65 C 228,80 235,100 220,115 C 200,130 175,120 165,95 C 150,60 115,55 85,80 C 60,100 60,135 80,155 C 105,175 135,165 145,145 C 150,135 145,125 135,125 C 128,125 122,130 120,135" 
+              stroke="#00f3ff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
 
-          <!-- Internal Chamber Ribs -->
-          <path class="icon-line glow" d="M 100,10 C 105,40 115,65 140,75" />
-          <path class="icon-line glow" d="M 130,20 C 125,48 120,68 138,88" />
-          <path class="icon-line glow" d="M 155,40 C 142,62 125,75 130,105" />
-          <path class="icon-line glow" d="M 168,65 C 150,82 125,88 120,120" />
-          <path class="icon-line glow" d="M 168,95 C 148,105 120,105 108,138" />
-          <path class="icon-line glow" d="M 158,125 C 138,128 112,118 92,152" />
-          <path class="icon-line glow" d="M 138,155 C 122,148 102,128 72,162" />
-          <path class="icon-line glow" d="M 108,174 C 100,155 90,125 50,158" />
-          <path class="icon-line glow" d="M 72,178 C 78,152 82,118 32,142" />
-          <path class="icon-line glow" d="M 40,168 C 58,142 72,108 20,118" />
-          <path class="icon-line glow" d="M 18,132 C 42,120 65,95 18,88" />
-          <path class="icon-line glow" d="M 12,92 C 38,90 62,75 28,55" />
-          <path class="icon-line glow" d="M 28,52 C 50,62 68,58 48,32" />
-          <path class="icon-line glow" d="M 52,28 C 68,48 78,45 75,20" />
-        </g>
-
-        <!-- Core Crisp Layer -->
-        <g class="core-layer">
-          <path class="icon-line core" d="
-            M 100,10 
-            C 145,10 175,40 170,85 
-            C 165,125 140,165 100,175 
-            C 55,185 20,150 15,110 
-            C 10,65 40,25 80,20 
-            C 115,15 140,40 140,75 
-            C 140,105 115,125 90,120 
-            C 70,115 65,95 75,80 
-            C 82,70 95,72 98,82
-          " />
-
-          <path class="icon-line core" d="M 100,10 C 105,40 115,65 140,75" />
-          <path class="icon-line core" d="M 130,20 C 125,48 120,68 138,88" />
-          <path class="icon-line core" d="M 155,40 C 142,62 125,75 130,105" />
-          <path class="icon-line core" d="M 168,65 C 150,82 125,88 120,120" />
-          <path class="icon-line core" d="M 168,95 C 148,105 120,105 108,138" />
-          <path class="icon-line core" d="M 158,125 C 138,128 112,118 92,152" />
-          <path class="icon-line core" d="M 138,155 C 122,148 102,128 72,162" />
-          <path class="icon-line core" d="M 108,174 C 100,155 90,125 50,158" />
-          <path class="icon-line core" d="M 72,178 C 78,152 82,118 32,142" />
-          <path class="icon-line core" d="M 40,168 C 58,142 72,108 20,118" />
-          <path class="icon-line core" d="M 18,132 C 42,120 65,95 18,88" />
-          <path class="icon-line core" d="M 12,92 C 38,90 62,75 28,55" />
-          <path class="icon-line core" d="M 28,52 C 50,62 68,58 48,32" />
-          <path class="icon-line core" d="M 52,28 C 68,48 78,45 75,20" />
-        </g>
+        <!-- Concentric Radial Septa (Internal Chamber Dividers) -->
+        <!-- Flared Top/Right Section -->
+        <path d="M 233,52 C 200,90 170,100 165,95" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 243,82 C 205,108 175,110 168,102" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 246,115 C 205,128 175,120 166,110" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 240,148 C 198,148 170,130 160,120" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 228,180 C 188,168 160,142 152,130" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        
+        <!-- Bottom Section -->
+        <path d="M 205,225 C 170,195 145,160 142,142" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 172,252 C 145,212 128,172 130,150" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 132,263 C 118,218 110,178 118,154" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 90,258 C 92,212 95,175 105,152" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        
+        <!-- Left Section -->
+        <path d="M 52,232 C 72,192 82,162 92,145" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 28,195 C 58,168 72,148 82,132" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 18,150 C 50,135 68,122 78,115" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 22,108 C 50,105 68,102 76,102" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        
+        <!-- Top Left Section -->
+        <path d="M 38,68 C 60,82 72,88 80,95" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 70,35 C 82,62 90,78 95,88" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 112,18 C 112,48 112,68 115,80" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 160,18 C 142,48 132,68 130,80" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
       </svg>
     </div>
     <div class="splash-title">Fossil Collector</div>
