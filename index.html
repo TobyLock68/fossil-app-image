@@ -61,6 +61,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      margin-top: -24px; /* Shifted graphics slightly upward */
     }
 
     .neon-svg {
@@ -101,10 +102,6 @@
     .splash-title {
       opacity: 0;
       animation: titleIn 0.9s ease 2.8s forwards;
-    }
-    @keyframes titleIn { to { opacity: 1; } }
-
-    .splash-title {
       margin-top: 28px;
       font-size: 1.15rem;
       letter-spacing: 4px;
@@ -113,6 +110,7 @@
       text-shadow: 0 0 8px var(--neon-blue), 0 0 16px var(--neon-blue);
       font-weight: 600;
     }
+    @keyframes titleIn { to { opacity: 1; } }
 
     /* --- MAIN APP UI STYLES --- */
     .container {
