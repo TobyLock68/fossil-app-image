@@ -18,6 +18,7 @@
       --success-color: #30d158;
       --danger-color: #ff453a;
       --warning-color: #ffd60a;
+      --neon-blue: #00f3ff;
     }
 
     body {
@@ -31,6 +32,77 @@
       align-items: center;
     }
 
+    /* --- SPLASH SCREEN STYLES --- */
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    #splash-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .neon-svg {
+      width: 220px;
+      height: 220px;
+      /* Cyan neon glow filters */
+      filter: drop-shadow(0 0 4px #ffffff) 
+              drop-shadow(0 0 10px var(--neon-blue)) 
+              drop-shadow(0 0 25px var(--neon-blue));
+    }
+
+    .neon-path {
+      fill: none;
+      stroke: var(--neon-blue);
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: drawClockwise 2.5s ease-in-out forwards infinite;
+    }
+
+    @keyframes drawClockwise {
+      0% {
+        stroke-dashoffset: 1000;
+        opacity: 0.3;
+      }
+      50% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+      }
+      90% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+      }
+      100% {
+        stroke-dashoffset: -1000;
+        opacity: 0.2;
+      }
+    }
+
+    .splash-title {
+      margin-top: 30px;
+      font-size: 1.1rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #ffffff;
+      text-shadow: 0 0 8px var(--neon-blue);
+      font-weight: 600;
+    }
+
+    /* --- MAIN APP UI STYLES --- */
     .container {
       width: 100%;
       max-width: 480px;
@@ -212,6 +284,38 @@
 </head>
 <body>
 
+  <!-- NEON SPLASH SCREEN -->
+  <div id="splash-screen">
+    <svg class="neon-svg" viewBox="0 0 200 200">
+      <!-- Spiral Ammonite Shell + Tentacles -->
+      <path class="neon-path" d="
+        M 100 100 
+        m -5 0 a 5 5 0 1 1 10 0 a 5 5 0 1 1 -10 0
+        m -10 0 a 15 15 0 1 1 30 0 a 15 15 0 1 1 -30 0
+        m -15 0 a 30 30 0 1 1 60 0 a 30 30 0 1 1 -60 0
+        m -20 0 a 50 50 0 1 1 100 0 a 50 50 0 1 1 -100 0
+        M 150 100 
+        C 150 130 130 155 100 155
+        C 75 155 60 140 50 120
+        C 40 135 30 145 20 135
+        C 15 125 30 120 40 115
+        C 25 115 10 110 15 98
+        C 20 90 35 100 45 105
+        C 30 95 20 85 28 75
+        C 35 68 45 85 55 95
+      " />
+      <!-- Rib lines on outer shell -->
+      <path class="neon-path" d="
+        M 100 50 L 100 35
+        M 135 65 L 148 55
+        M 150 100 L 165 100
+        M 135 135 L 148 145
+        M 100 150 L 100 165
+      " />
+    </svg>
+    <div class="splash-title">Fossil Collector</div>
+  </div>
+
   <div class="container">
     <h1>Fossil Collector</h1>
 
@@ -256,7 +360,7 @@
       </div>
     </div>
 
-    <!-- TAB 2: IDENTIFY (OFFLINE PLACEHOLDER) -->
+    <!-- TAB 2: IDENTIFY -->
     <div id="identifyTab" class="tab-content" style="display: none;">
       <div class="card">
         <h3>Offline Identification</h3>
@@ -298,6 +402,14 @@
   </div>
 
   <script>
+    // AUTO HIDE SPLASH SCREEN
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) splash.classList.add('hidden');
+      }, 2200); // Hides after 2.2 seconds
+    });
+
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLACQ3MCDFxzv4Q9zslvSbTt4oxOtfud5uqkvdITCwG2SB6CmvCeNs4JeTbm4DQqU/exec";
 
     const SPECIES_DATA = [
